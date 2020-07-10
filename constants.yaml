@@ -1,0 +1,30 @@
+# Constants for Codeforces API
+
+url: "https://codeforces.com/api/"
+
+methods:
+  blog: "blogEntry.view?blogEntryId={}"
+  contest:
+    base_str: "contest"
+    subclass:
+      hacks: "{}.hacks?contestId={}"
+      list: "{}.list?gym={}"
+      ratingChange: "{}.ratingChanges?contestId={}"
+      standings: "{}.standings?contestId={}&from={}&count={}&showUnofficial={}"
+      status: "{}.status?contestId={}&from={}&count={}"
+  problemset:
+    base_str: "problemset"
+    subclass:
+      problems: "{}.problems?tags={}"
+      recentStatus: "{}.recentStatus?count={}"
+      recentActions: "recentActions?maxCount={}"
+      user:
+        base_str: "user"
+        subclass:
+          blogEntries: "{}.blogEntries?handle={}"
+          friends: "{}.friends?onlyOnline={}"
+          info: "{}.info?handles={}"
+          ratedList: "{}.ratedList?activeOnly={}"
+          rating: "{}.rating?handle={}"
+          status: "{}.status?handle={}&from={}&count={}"
+		  
