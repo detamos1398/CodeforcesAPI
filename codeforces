@@ -1,0 +1,32 @@
+#!/bin/env python3
+
+# Python script to run the codeforces_lib library
+
+import argparse
+from codeforces_lib import Codeforces
+
+def blog_call(codeforces_api, args):
+    bID = args.blogID
+    
+    print(codeforces_api.getBlogView(bID))
+    
+    if args.blog_comments:
+        print(codeforces_api.getBlogComments(bID))
+
+if __name__=='__main__':
+    parser = argparse.ArgumentParser()
+    parser.add_argument('-b', '--blogID', default=None,
+                         help='Blog ID, by default print the blog. Needs --blog-comments for blog comments.')
+    parser.add_argument('--blog-comments', action='store_true',
+                         help='Get the comments from a blog entry (Requires blogID argument)')
+    args = parser.parse_args()
+
+    codeforces_api = Codeforces()
+
+    if args.blogID is not None:
+        blog_call(codeforces_api, args)
+        exit(0)
+
+    print("You didn't specify any flag. This utility needs flags to be specified.\nHere is the help section for you : ")
+    parser.print_help()
+    
