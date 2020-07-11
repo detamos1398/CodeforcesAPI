@@ -5,7 +5,7 @@ url: "https://codeforces.com/api/"
 methods:
   blog:
     base_str: "blogEntry"
-    comments: "{}.comments?blogEtryId={}"
+    comments: "{}.comments?blogEntryId={}"
     view: "{}.view?blogEntryId={}"
   contest:
     base_str: "contest"
@@ -27,3 +27,58 @@ methods:
     ratedList: "{}.ratedList?activeOnly={}"
     rating: "{}.rating?handle={}"
     status: "{}.status?handle={}&from={}&count={}"
+
+returnObjSchema:
+  blog:
+    id: int
+    originalLocale: str
+    creationTimeSeconds: int
+    authorHandle: str
+    title: str
+    content: str
+    locale: str
+    modificationTimeSeconds: int
+    allowViewHistory: bool
+    tags: list
+    rating: int
+  comment:
+    id: int
+    creationTimeSeconds: int
+    commentatorHandle: str
+    locale: str
+    text: str
+    parentCommentId: int
+    rating: int
+  hack:
+    id: int
+    creationTimeSeconds: int
+    hacker: Party
+    defender: Party
+    verdict: str
+    problem: Problem
+    test: str
+    judgeProtocol: JudgeProtocol
+  party:
+    contestId: int
+    members: list
+    participantType: str
+    teamId: int
+    teamName: str
+    ghost: bool
+    room: int
+    startTimeSeconds: int
+  member:
+    handle: str
+  problem:
+    contestId: int
+    problemsetName: str
+    index: str
+    name: str
+    type: str
+    points: float
+    rating: int
+    tags: list
+  judgeprotocol:
+    manual: str
+    protocol: str
+    verdict: str

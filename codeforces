@@ -3,30 +3,55 @@
 # Python script to run the codeforces_lib library
 
 import argparse
+
 from codeforces_lib import Codeforces
+from pydoc import locate
 
-def blog_call(codeforces_api, args):
-    bID = args.blogID
-    
-    print(codeforces_api.getBlogView(bID))
-    
-    if args.blog_comments:
-        print(codeforces_api.getBlogComments(bID))
+def blog(codeforces_api, args):
+    blogId = args.blogId
+    view = codeforces_api.getBlogView(blogId)
+    view.pretty_print()
+    if args.include_comments:
+        commentList = codeforces_api.getBlogComments(blogId)
+        for comment in commentList:
+            comment.pretty_print()
+            print("\n")
 
+def contest(codeforces_api, args):
+    contestId = args.contestId
+    if args.hacks is True:
+        if contestId is None:
+            print("Please pass the contestID for getiing list of hacks")
+            return
+        hacks = codeforces_api.getHacks(contestId)
+        hack_str = ''
+        next_line = '====================================================\n\n\n'
+        for hack in hacks:
+            hack_str += hack.pretty_print() + next_line
+        print(hack_str)
+        
+        
 if __name__=='__main__':
     parser = argparse.ArgumentParser()
-    parser.add_argument('-b', '--blogID', default=None,
-                         help='Blog ID, by default print the blog. Needs --blog-comments for blog comments.')
-    parser.add_argument('--blog-comments', action='store_true',
-                         help='Get the comments from a blog entry (Requires blogID argument)')
-    args = parser.parse_args()
+    subparser = parser.add_subparsers(help='Command to be run')
 
-    codeforces_api = Codeforces()
+    parsers = {}
+    # argument parser for blog_call
+    parsers['blog'] = subparser.add_parser('blog', help='Get Blog Entries with given blogId')
+    parsers['blog'].add_argument('blogId', help='Blog ID (present in the codeforces URL')
+    parsers['blog'].add_argument('-c', '--include-comments', action='store_true', help='Show comments of the given blog')
+    parsers['blog'].set_defaults(func=blog)
 
-    if args.blogID is not None:
-        blog_call(codeforces_api, args)
-        exit(0)
-
-    print("You didn't specify any flag. This utility needs flags to be specified.\nHere is the help section for you : ")
-    parser.print_help()
+    #argument parser for contest
+    parsers['contest'] = subparser.add_parser('contest', help='Get contest specific details', conflict_handler='resolve')
+    parsers['contest'].add_argument('contestId', nargs='?', default=None,
+                                    help='Contest ID, Note: This is not the Round number. You will find contest ID present in the url of the contest')
+    parsers['contest'].add_argument('-h', '--hacks', action='store_true', help='Display the hacks from the given contest')
+    parsers['contest'].set_defaults(func=contest)
     
+    args = parser.parse_args()
+    if not hasattr(args, 'func'):
+        parser.print_help()
+    else:
+        codeforces_api = Codeforces()
+        args.func(codeforces_api, args)
